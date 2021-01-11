@@ -1,0 +1,60 @@
+This assignment has two parts: (1) Data Generation, and (2) Modeling. 
+
+(1) [40pts] Data Generation - create a notebook (generate_dataset.ipynb) that generates a new table with 500 rows and each row contains a set of summary attributes that are extracted from the respective portfolio file.
+
+Create a function called read_portfolio that takes a number as an argument (portfolio number in this case)  
+Load the data corresponding to the portfolio number into a Pandas data frame
+[20pts] Calculate the following summary attributes of a portfolio:
+ID - portfolio number
+VATD_NA - relative frequency of 'Vehicle_Anti_Theft_Device' = 'Not Applicable'
+(note this is just the count of policies that satisfy this condition divided by the total number of policies in the portfolio)
+VATD_Passive - relative frequency of 'Vehicle_Anti_Theft_Device' = 'Passive Disabling-Vehicle Recovery'
+VATD_Alarm - relative frequency of 'Vehicle_Anti_Theft_Device' = 'Alarm Only'
+VATD_Active - relative frequency of 'Vehicle_Anti_Theft_Device' = 'Active Disabling'
+DMA_mean - average of 'Driver_Minimum_Age'
+DMA_std - standard deviation of 'Driver_Minimum_Age'
+VAY_mean - average of 'Vehicle_Age_In_Years'
+VAY_std - standard deviation of 'Vehicle_Age_In_Years'
+AP_mean - average of 'Annual_Premium'
+AP_std - standard deviation of 'Annual_Premium'
+ln_LR - natural logarithm of loss ratio, which is obtained using the following formula
+(ln_LR=log[ sum('Loss_Amount') / sum('Annual_Premium') ]
+The function should return a dictionaries with this values. This is how it should look like for portfolio #1:
+{'ID': '1',
+ 'VATD_NA': 0.583,
+ 'VATD_Passive': 0.321,
+ 'VATD_Alarm': 0.071,
+ 'VATD_Active': 0.024,
+ 'DMA_mean': 46.163,
+ 'DMA_std': 15.379823470052257,
+ 'VAY_mean': 6.925,
+ 'VAY_std': 2.6272185438743487,
+ 'AP_mean': 335.17471999999964,
+ 'AP_std': 191.69561566083144,
+ 'ln_LR': -1.0224378731039194}
+Create an empty data frame to collect the summary attributes of all the portfolios.
+Write a for loop that goes from 1 to 500 and calls the read_portfolio function. Append the results of the function to the new data frame.  (You might have to ignore the index here)
+After the data frame has been populated and contains 500 rows, set the index to 'ID'. Here is a snapshot of how your top 5 rows of your new data frame should look like.
+screen_df.PNG
+
+[20pts] Export this data into a file called summary_portfolios.csv
+ 
+
+(2) [60pts] Modeling - create a notebook (modeling.ipynb) that will be used to build two models to predict ln_LR, a linear regression without regularization, and a Lasso regression with the regularization parameter determined by cross-validation.
+
+Load the data contained in summary_portfolios.csv into a pandas data frame. Make sure you set the index to 'ID'. 
+[5pts] Create numpy arrays with  the features and the target. Print the means and stds of the input features.
+[5pts] Scale the input features such that the all have zero mean and unit standard deviation. [Checkout Data Scaling in the Data Wrangling module]
+[5pts] Split the data into training and testing. Do not shuffle it! Use the first 300 rows for training and the last 200 for testing.
+[5pts] Using the training dataset build a LinearRegression. What is the intercept and the coefficients associated with the input attributes?
+[5pts] Using the training dataset build 100 L1-regularized linear models corresponding to 100 regularization coefficients evenly spaced between 0.001 and 0.1. Use the 10-fold cross validation to find the best regularization coefficient. What is the intercept and the coefficients associated with the input attributes corresponding to the best regularization coefficient?
+[5pts] Calculate the followings:
+Linear Regression - training RMSE
+Linear Regression - testing RMSE
+Lasso (best alpha) - training RMSE
+Lasso (best alpha) - average RMSE obtained by averaging the 10 RMSEs obtained during cross-validation
+Provide the 95% confidence interval in the above mean (you will need to compute the Standard Error)
+Lasso (best alpha) - testing RMSE
+[10pts] Which model do you prefer between the Linear Regression and Lasso (best alpha) and why?
+[10pts] What additional information Lasso gives about predicting the target?
+[10pts] What observation can you make by comparing the 95% confidence interval for the mean RMSE and the testing RMSE for Lasso? 
